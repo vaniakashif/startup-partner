@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FounderMatch — Find Your Co-Founder</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent: #e94560;
+      --accent2: #0f3460;
+      --bg: #ffffff;
+      --bg2: #f7f7f8;
+      --border: rgba(0,0,0,0.1);
+      --border2: rgba(0,0,0,0.18);
+      --text: #111111;
+      --muted: #555555;
+      --hint: #999999;
+      --radius: 12px;
+      --radiusmd: 8px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .app { max-width: 720px; margin: 0 auto; }
+
+    .screen { display: none; animation: fadeIn 0.22s ease; }
+    .screen.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; } }
+
+    /* NAV */
+    .nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px; border-bottom: 0.5px solid var(--border);
+      background: var(--bg); position: sticky; top: 0; z-index: 10;
+    }
+    .nav-logo {
+      font-size: 17px; font-weight: 600; color: var(--text);
+      display: flex; align-items: center; gap: 8px; cursor: pointer;
+    }
+    .logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); display: inline-block; }
+    .nav-links { display: flex; gap: 8px; align-items: center; }
+    .nav-btn {
+      font-size: 13px; padding: 7px 15px; border-radius: var(--radiusmd);
+      border: 0.5px solid var(--border); background: transparent;
+      color: var(--muted); cursor: pointer; font-family: inherit; transition: all 0.15s;
+    }
+    .nav-btn:hover { background: var(--bg2); color: var(--text); }
+    .nav-btn.primary {
+      background: var(--accent); color: white; border-color: var(--accent); font-weight: 500;
+    }
+    .nav-btn.primary:hover { opacity: 0.88; }
+
+    /* HERO */
+    .hero { padding: 60px 24px 52px; text-align: center; background: var(--bg); }
+    .hero-tag {
+      display: inline-block; font-size: 11px; font-weight: 600;
+      letter-spacing: 0.08em; color: var(--accent);
+      border: 0.5px solid var(--accent); border-radius: 20px;
+      padding: 4px 13px; margin-bottom: 22px; text-transform: uppercase;
+    }
+    .hero h1 { font-size: 38px; font-weight: 600; line-height: 1.18; color: var(--text); margin-bottom: 16px; }
+    .hero h1 span { color: var(--accent); }
+    .hero p { font-size: 15px; color: var(--muted); line-height: 1.65; max-width: 440px; margin: 0 auto 30px; }
+    .hero-ctas { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+    .btn-primary {
+      padding: 11px 26px; background: var(--accent); color: white;
+      border: none; border-radius: var(--radiusmd);
+      font-size: 14px; font-weight: 500; cursor: pointer;
+      font-family: inherit; transition: opacity 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.88; }
+    .btn-outline {
+      padding: 11px 26px; background: transparent; color: var(--text);
+      border: 0.5px solid var(--border2); border-radius: var(--radiusmd);
+      font-size: 14px; cursor: pointer; font-family: inherit; transition: background 0.15s;
+    }
+    .btn-outline:hover { background: var(--bg2); }
+
+    /* STATS */
+    .stats {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1px; background: var(--border);
+      border-top: 0.5px solid var(--border); border-bottom: 0.5px solid var(--border);
+    }
+    .stat { padding: 22px; background: var(--bg); text-align: center; }
+    .stat-num { font-size: 24px; font-weight: 600; color: var(--text); }
+    .stat-label { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+    /* SECTION */
+    .section { padding: 32px 20px; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .section-title { font-size: 16px; font-weight: 600; color: var(--text); }
+    .section-link {
+      font-size: 13px; color: var(--accent); cursor: pointer;
+      border: none; background: none; font-family: inherit;
+    }
+
+    /* FILTERS */
+    .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+    .filter-btn {
+      font-size: 12px; padding: 5px 13px; border-radius: 20px;
+      border: 0.5px solid var(--border); background: var(--bg);
+      color: var(--muted); cursor: pointer; font-family: inherit; transition: all 0.15s;
+    }
+    .filter-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+    .filter-btn:hover:not(.active) { background: var(--bg2); color: var(--text); }
+
+    /* CARDS GRID */
+    .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 520px) { .cards { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--bg); border: 0.5px solid var(--border);
+      border-radius: var(--radius); padding: 18px; cursor: pointer;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .card:hover { border-color: var(--border2); box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+    .card-icon {
+      width: 38px; height: 38px; border-radius: var(--radiusmd);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .card-badge { font-size: 10px; font-weight: 600; padding: 3px 9px; border-radius: 20px; }
+    .badge-idea { background: #e8f4fd; color: #185FA5; }
+    .badge-mvp  { background: #eaf3de; color: #3B6D11; }
+    .badge-growth { background: #faeeda; color: #854F0B; }
+    .card h3 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 5px; }
+    .card p  { font-size: 12px; color: var(--muted); line-height: 1.55; margin-bottom: 12px; }
+    .card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+    .tag {
+      font-size: 11px; padding: 3px 9px; border-radius: 20px;
+      background: var(--bg2); color: var(--muted); border: 0.5px solid var(--border);
+    }
+    .card-meta { display: flex; gap: 8px; font-size: 11px; color: var(--hint); }
+
+    /* BACK BTN */
+    .back-btn {
+      display: flex; align-items: center; gap: 7px; font-size: 13px;
+      color: var(--muted); cursor: pointer; background: none; border: none;
+      font-family: inherit; padding: 14px 20px;
+      border-bottom: 0.5px solid var(--border); width: 100%;
+      text-align: left; transition: color 0.15s;
+    }
+    .back-btn:hover { color: var(--text); }
+
+    /* DETAIL */
+    .detail-hero { padding: 24px 20px; border-bottom: 0.5px solid var(--border); }
+    .detail-icon {
+      width: 54px; height: 54px; border-radius: var(--radius);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; margin-bottom: 14px;
+      background: var(--bg2); border: 0.5px solid var(--border);
+    }
+    .detail-title { font-size: 22px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .detail-sub  { font-size: 14px; color: var(--muted); margin-bottom: 14px; line-height: 1.5; }
+    .detail-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip {
+      font-size: 12px; padding: 4px 11px; border-radius: 20px;
+      border: 0.5px solid var(--border); background: var(--bg2); color: var(--muted);
+    }
+
+    .detail-body { padding: 20px; }
+    .detail-section { margin-bottom: 26px; }
+    .detail-section h4 {
+      font-size: 11px; font-weight: 600; color: var(--hint);
+      text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 10px;
+    }
+    .detail-section p { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+    .role-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .role-card {
+      border: 0.5px solid var(--border); border-radius: var(--radiusmd);
+      padding: 14px; background: var(--bg);
+    }
+    .role-card h5 { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .role-card p  { font-size: 12px; color: var(--muted); line-height: 1.4; }
+    .role-card .equity { font-size: 13px; font-weight: 600; color: var(--accent); margin-top: 8px; }
+
+    .founder-row {
+      display: flex; align-items: center; gap: 13px;
+      padding: 14px; background: var(--bg2); border-radius: var(--radiusmd);
+    }
+    .avatar {
+      width: 42px; height: 42px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 600; flex-shrink: 0;
+    }
+    .founder-info h5 { font-size: 14px; font-weight: 600; color: var(--text); }
+    .founder-info p  { font-size: 12px; color: var(--muted); }
+
+    /* PROPOSAL FORM */
+    .proposal-wrap { padding: 24px 20px; }
+    .proposal-wrap h2 { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .proposal-wrap .sub { font-size: 13px; color: var(--muted); margin-bottom: 26px; }
+
+    .form-group { margin-bottom: 18px; }
+    .form-label { font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 7px; display: block; }
+    .form-select, .form-textarea, .form-input {
+      width: 100%; padding: 10px 13px;
+      border: 0.5px solid var(--border2); border-radius: var(--radiusmd);
+      font-size: 14px; font-family: inherit;
+      background: var(--bg); color: var(--text);
+      outline: none; transition: border-color 0.15s;
+    }
+    .form-select:focus, .form-textarea:focus, .form-input:focus {
+      border-color: var(--accent);
+    }
+    .form-textarea { min-height: 90px; resize: vertical; }
+
+    .offering-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+    .offering-opt {
+      border: 0.5px solid var(--border2); border-radius: var(--radiusmd);
+      padding: 12px 10px; text-align: center; cursor: pointer;
+      transition: all 0.15s; background: var(--bg);
+    }
+    .offering-opt:hover { background: var(--bg2); }
+    .offering-opt.selected { border-color: var(--accent); background: #fff1f3; }
+    .offering-opt span { font-size: 20px; display: block; margin-bottom: 5px; }
+    .offering-opt p { font-size: 12px; color: var(--muted); font-weight: 500; }
+    .offering-opt.selected p { color: var(--accent); }
+
+    /* SUCCESS */
+    .success-wrap { padding: 60px 20px; text-align: center; }
+    .success-icon {
+      width: 68px; height: 68px; border-radius: 50%;
+      background: #eaf3de; color: #3B6D11;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 30px; margin: 0 auto 22px; font-weight: 600;
+    }
+    .success-wrap h2 { font-size: 22px; font-weight: 600; color: var(--text); margin-bottom: 10px; }
+    .success-wrap p {
+      font-size: 14px; color: var(--muted); line-height: 1.65;
+      max-width: 340px; margin: 0 auto 28px;
+    }
+
+    /* POST IDEA */
+    .post-wrap { padding: 24px 20px; }
+    .post-wrap h2 { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .post-wrap .sub { font-size: 13px; color: var(--muted); margin-bottom: 26px; }
+    .steps-indicator { display: flex; gap: 5px; margin-bottom: 28px; }
+    .step-ind {
+      flex: 1; height: 3px; background: var(--border);
+      border-radius: 2px; transition: background 0.3s;
+    }
+    .step-ind.done { background: var(--accent); }
+
+    /* HOW IT WORKS */
+    .how-wrap { padding: 40px 20px; }
+    .how-wrap h2 { font-size: 26px; font-weight: 600; text-align: center; margin-bottom: 8px; }
+    .how-wrap .sub { font-size: 14px; color: var(--muted); text-align: center; margin-bottom: 40px; }
+    .steps-list { display: flex; flex-direction: column; gap: 0; }
+    .step-item { display: flex; gap: 18px; padding: 20px 0; border-bottom: 0.5px solid var(--border); }
+    .step-item:last-child { border-bottom: none; }
+    .step-num {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--accent); color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 600; flex-shrink: 0; margin-top: 2px;
+    }
+    .step-content h4 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .step-content p  { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    footer {
+      text-align: center; padding: 28px 20px;
+      border-top: 0.5px solid var(--border);
+      font-size: 12px; color: var(--hint);
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-logo" onclick="show('home')">
+      <span class="logo-dot"></span>FounderMatch
+    </div>
+    <div class="nav-links">
+      <button class="nav-btn" onclick="show('how')">How it works</button>
+      <button class="nav-btn" onclick="show('browse')">Browse Ideas</button>
+      <button class="nav-btn primary" onclick="show('post')">Post Idea</button>
+    </div>
+  </nav>
+
+  <!-- HOME -->
+  <div class="screen active" id="screen-home">
+    <div class="hero">
+      <div class="hero-tag">Community-Driven Startup Platform</div>
+      <h1>Find your<br><span>co-founder</span> today</h1>
+      <p>Connect with startup ideas in your community. Offer skills, capital, or connections — and build something real together.</p>
+      <div class="hero-ctas">
+        <button class="btn-primary" onclick="show('browse')">Browse Startups</button>
+        <button class="btn-outline" onclick="show('post')">Post Your Idea</button>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-num">142</div><div class="stat-label">Active ideas</div></div>
+      <div class="stat"><div class="stat-num">380+</div><div class="stat-label">Community members</div></div>
+      <div class="stat"><div class="stat-num">26</div><div class="stat-label">Partnerships formed</div></div>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <span class="section-title">Featured ideas</span>
+        <button class="section-link" onclick="show('browse')">View all →</button>
+      </div>
+      <div class="cards">
+        <div class="card" onclick="show('detail')">
+          <div class="card-top">
+            <div class="card-icon" style="background:#e8f4fd;">🚗</div>
+            <span class="card-badge badge-mvp">MVP Stage</span>
+          </div>
+          <h3>RideShare for Students</h3>
+          <p>University carpooling app connecting students commuting between campuses.</p>
+          <div class="card-tags"><span class="tag">Tech Partner</span><span class="tag">Marketing</span></div>
+          <div class="card-meta"><span>5–10% equity</span><span>·</span><span>Karachi</span></div>
+        </div>
+        <div class="card" onclick="show('detail2')">
+          <div class="card-top">
+            <div class="card-icon" style="background:#eaf3de;">📦</div>
+            <span class="card-badge badge-idea">Idea Stage</span>
+          </div>
+          <h3>LocalMart Delivery</h3>
+          <p>Hyperlocal grocery delivery from neighbourhood kiryana stores.</p>
+          <div class="card-tags"><span class="tag">Developer</span><span class="tag">Investor</span></div>
+          <div class="card-meta"><span>8–15% equity</span><span>·</span><span>Lahore</span></div>
+        </div>
+        <div class="card" onclick="show('detail')">
+          <div class="card-top">
+            <div class="card-icon" style="background:#faeeda;">🎓</div>
+            <span class="card-badge badge-idea">Idea Stage</span>
+          </div>
+          <h3>TutorLink Pakistan</h3>
+          <p>Marketplace connecting school students with affordable local tutors.</p>
+          <div class="card-tags"><span class="tag">Sales</span><span class="tag">Network</span></div>
+          <div class="card-meta"><span>10–12% equity</span><span>·</span><span>Islamabad</span></div>
+        </div>
+        <div class="card" onclick="show('detail')">
+          <div class="card-top">
+            <div class="card-icon" style="background:#fbeaf0;">🏥</div>
+            <span class="card-badge badge-growth">Growth Stage</span>
+          </div>
+          <h3>HealthBridge</h3>
+          <p>Telemedicine platform focused on tier-2 cities with low doctor access.</p>
+          <div class="card-tags"><span class="tag">Investor</span></div>
+          <div class="card-meta"><span>3–5% equity</span><span>·</span><span>Multan</span></div>
+        </div>
+      </div>
+    </div>
+    <footer>FounderMatch · Built for university project demo · 2025</footer>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="screen" id="screen-how">
+    <button class="back-btn" onclick="show('home')">← Back to home</button>
+    <div class="how-wrap">
+      <h2>How FounderMatch works</h2>
+      <p class="sub">From idea to partnership in five simple steps</p>
+      <div class="steps-list">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>Founder posts a startup idea</h4>
+            <p>Describe your problem, solution, current stage, and what kind of partner you're looking for. Be specific about equity range and expected contribution.</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>Community members browse ideas</h4>
+            <p>Filter by category, city, role needed, or stage. Find an idea that excites you and matches your skillset or resources.</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>Submit a proposal</h4>
+            <p>Tell the founder what you bring — skills, capital, or network. Write a short pitch explaining why you're the right fit.</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h4>Founder reviews and selects</h4>
+            <p>The founder reviews all proposals and reaches out to the most suitable candidates to begin conversations.</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <h4>Discuss, agree, and build</h4>
+            <p>Use our built-in chat and partnership document templates to finalise equity splits, roles, and begin building together.</p>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:36px;display:flex;gap:12px;justify-content:center;">
+        <button class="btn-primary" onclick="show('browse')">Browse Startups</button>
+        <button class="btn-outline" onclick="show('post')">Post Your Idea</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BROWSE -->
+  <div class="screen" id="screen-browse">
+    <div class="section">
+      <div class="section-header">
+        <span class="section-title">All startup ideas</span>
+        <span style="font-size:12px;color:var(--hint);">142 listings</span>
+      </div>
+      <div class="filters">
+        <button class="filter-btn active" onclick="setFilter(this)">All</button>
+        <button class="filter-btn" onclick="setFilter(this)">Tech</button>
+        <button class="filter-btn" onclick="setFilter(this)">E-commerce</button>
+        <button class="filter-btn" onclick="setFilter(this)">Health</button>
+        <button class="filter-btn" onclick="setFilter(this)">Education</button>
+        <button class="filter-btn" onclick="setFilter(this)">Looking for investor</button>
+      </div>
+      <div class="cards">
+        <div class="card" onclick="show('detail')">
+          <div class="card-top">
+            <div class="card-icon" style="background:#e8f4fd;">🚗</div>
+            <span class="card-badge badge-mvp">MVP Stage</span>
+          </div>
+          <h3>RideShare for Students</h3>
+          <p>University carpooling app connecting students between campuses.</p>
+          <div class="card-tags"><span class="tag">Tech Partner</span><span class="tag">Marketing</span></div>
+          <div class="card-meta"><span>5–10% equity</span><span>·</span><span>Karachi</span></div>
+        </div>
+        <div class="card" onclick="show('detail2')">
+          <div class="card-top">
+            <div class="card-icon" style="background:#eaf3de;">📦</div>
+            <span class="card-badge badge-idea">Idea Stage</span>
+          </div>
+          <h3>LocalMart Delivery</h3>
+          <p>Hyperlocal grocery delivery from neighbourhood kiryana stores.</p>
+          <div class="card-tags"><span class="tag">Developer</span><span class="tag">Investor</span></div>
+          <div class="card-meta"><span>8–15% equity</span><span>·</span><span>Lahore</span></div>
+        </div>
+        <div class="card" onclick="show('detail')">
+          <div class="card-top">
+            <div class="card-icon" style="background:#faeeda;">🎓</div>
+            <span class="card-badge badge-idea">Idea Stage</span>
+          </div>
+          <h3>TutorLink Pakistan</h3>
+          <p>Marketplace for affordable local tutors for school students.</p>
+          <div class="card-tags"><span class="tag">Sales</span><span class="tag">Network</span></div>
+          <div class="card-meta"><span>10–12% equity</span><span>·</span><span>Islamabad</span></div>
+        </div>
+        <div class="card" onclick="show('detail')">
+          <div class="card-top">
+            <div class="card-icon" style="background:#fbeaf0;">🏥</div>
+            <span class="card-badge badge-growth">Growth Stage</span>
+          </div>
+          <h3>HealthBridge</h3>
+          <p>Telemedicine for tier-2 cities with limited doctor access.</p>
+          <div class="card-tags"><span class="tag">Investor</span></div>
+          <div class="card-meta"><span>3–5% equity</span><span>·</span><span>Multan</span></div>
+        </div>
+        <div class="card" onclick="show('detail')">
+          <div class="card-top">
+            <div class="card-icon" style="background:#eeedfe;">🛍</div>
+            <span class="card-badge badge-idea">Idea Stage</span>
+          </div>
+          <h3>ThriftPK</h3>
+          <p>Second-hand clothing marketplace for Gen-Z in Pakistan.</p>
+          <div class="card-tags"><span class="tag">Marketing</span><span class="tag">Tech</span></div>
+          <div class="card-meta"><span>10–20% equity</span><span>·</span><span>Karachi</span></div>
+        </div>
+        <div class="card" onclick="show('detail')">
+          <div class="card-top">
+            <div class="card-icon" style="background:#e1f5ee;">🌾</div>
+            <span class="card-badge badge-mvp">MVP Stage</span>
+          </div>
+          <h3>AgriConnect</h3>
+          <p>Connecting small farmers directly to buyers, removing middlemen.</p>
+          <div class="card-tags"><span class="tag">Developer</span><span class="tag">Network</span></div>
+          <div class="card-meta"><span>7–12% equity</span><span>·</span><span>Faisalabad</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETAIL 1 -->
+  <div class="screen" id="screen-detail">
+    <button class="back-btn" onclick="show('browse')">← Back to listings</button>
+    <div class="detail-hero">
+      <div class="detail-icon">🚗</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <span class="card-badge badge-mvp">MVP Stage</span>
+        <span style="font-size:12px;color:var(--hint);">Karachi · 3 days ago</span>
+      </div>
+      <div class="detail-title">RideShare for Students</div>
+      <div class="detail-sub">University carpooling app connecting students commuting between campuses daily</div>
+      <div class="detail-chips">
+        <span class="chip">Tech</span><span class="chip">Mobility</span><span class="chip">B2C</span>
+      </div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-section">
+        <h4>The Problem</h4>
+        <p>Students in Karachi spend 2–3 hours daily commuting. Public transport is unreliable and ride-hailing is expensive. There's no affordable, safe option designed specifically for students.</p>
+      </div>
+      <div class="detail-section">
+        <h4>The Solution</h4>
+        <p>A carpooling app exclusively for verified university students. Drivers and riders are both students, building trust through shared university identity. Payments are split automatically in-app.</p>
+      </div>
+      <div class="detail-section">
+        <h4>Roles we're looking for</h4>
+        <div class="role-cards">
+          <div class="role-card">
+            <h5>Tech Co-founder</h5>
+            <p>Build and lead the mobile app (React Native or Flutter preferred)</p>
+            <div class="equity">5–10% equity</div>
+          </div>
+          <div class="role-card">
+            <h5>Marketing Partner</h5>
+            <p>University outreach, social media, campus ambassador program</p>
+            <div class="equity">3–5% equity</div>
+          </div>
+        </div>
+      </div>
+      <div class="detail-section">
+        <h4>Founder</h4>
+        <div class="founder-row">
+          <div class="avatar" style="background:#e8f4fd;color:#185FA5;">AK</div>
+          <div class="founder-info">
+            <h5>Ahmed Khan</h5>
+            <p>Business student, IBA Karachi · 2nd-time founder</p>
+          </div>
+        </div>
+      </div>
+      <button class="btn-primary" style="width:100%;padding:14px;" onclick="show('proposal')">Submit a Proposal</button>
+    </div>
+  </div>
+
+  <!-- DETAIL 2 -->
+  <div class="screen" id="screen-detail2">
+    <button class="back-btn" onclick="show('browse')">← Back to listings</button>
+    <div class="detail-hero">
+      <div class="detail-icon">📦</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <span class="card-badge badge-idea">Idea Stage</span>
+        <span style="font-size:12px;color:var(--hint);">Lahore · 1 week ago</span>
+      </div>
+      <div class="detail-title">LocalMart Delivery</div>
+      <div class="detail-sub">Hyperlocal grocery delivery from neighbourhood kiryana stores to your doorstep</div>
+      <div class="detail-chips">
+        <span class="chip">E-commerce</span><span class="chip">Logistics</span><span class="chip">B2C</span>
+      </div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-section">
+        <h4>The Problem</h4>
+        <p>Small kiryana stores have loyal customers but no digital presence. Meanwhile, people want quick grocery delivery without paying premium app prices. These two groups need a bridge.</p>
+      </div>
+      <div class="detail-section">
+        <h4>The Solution</h4>
+        <p>A lightweight app that digitises local kiryana stores and connects them to nearby residents for 30-minute delivery. Stores get more orders, customers get convenience, everyone wins.</p>
+      </div>
+      <div class="detail-section">
+        <h4>Roles we're looking for</h4>
+        <div class="role-cards">
+          <div class="role-card">
+            <h5>Developer</h5>
+            <p>Full-stack web and mobile app development</p>
+            <div class="equity">8–12% equity</div>
+          </div>
+          <div class="role-card">
+            <h5>Early Investor</h5>
+            <p>Seed capital to onboard 50 kiryana stores in Lahore</p>
+            <div class="equity">10–15% equity</div>
+          </div>
+        </div>
+      </div>
+      <div class="detail-section">
+        <h4>Founder</h4>
+        <div class="founder-row">
+          <div class="avatar" style="background:#eaf3de;color:#3B6D11;">SR</div>
+          <div class="founder-info">
+            <h5>Sara Raza</h5>
+            <p>CS student, LUMS Lahore · Former intern at Bykea</p>
+          </div>
+        </div>
+      </div>
+      <button class="btn-primary" style="width:100%;padding:14px;" onclick="show('proposal')">Submit a Proposal</button>
+    </div>
+  </div>
+
+  <!-- PROPOSAL -->
+  <div class="screen" id="screen-proposal">
+    <button class="back-btn" onclick="show('detail')">← Back to idea</button>
+    <div class="proposal-wrap">
+      <h2>Submit your proposal</h2>
+      <p class="sub">Tell the founder what you bring to the table.</p>
+
+      <div class="form-group">
+        <label class="form-label">What role are you applying for?</label>
+        <select class="form-select">
+          <option>Tech Co-founder</option>
+          <option>Marketing Partner</option>
+          <option>Investor</option>
+          <option>Advisor / Network</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">What are you offering?</label>
+        <div class="offering-grid">
+          <div class="offering-opt selected" onclick="toggleOffer(this)">
+            <span>💻</span><p>Skills</p>
+          </div>
+          <div class="offering-opt" onclick="toggleOffer(this)">
+            <span>💰</span><p>Capital</p>
+          </div>
+          <div class="offering-opt" onclick="toggleOffer(this)">
+            <span>🤝</span><p>Network</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Brief introduction</label>
+        <textarea class="form-textarea" placeholder="Who are you and what's your relevant experience?"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Why this startup?</label>
+        <textarea class="form-textarea" placeholder="Why are you interested in this idea specifically?"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Your LinkedIn or portfolio (optional)</label>
+        <input class="form-input" type="text" placeholder="https://linkedin.com/in/yourname" />
+      </div>
+
+      <button class="btn-primary" style="width:100%;padding:14px;margin-top:8px;" onclick="show('success')">
+        Send Proposal
+      </button>
+    </div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="screen" id="screen-success">
+    <div class="success-wrap">
+      <div class="success-icon">✓</div>
+      <h2>Proposal sent!</h2>
+      <p>Ahmed will review your proposal and reach out within 3–5 days. You'll get an email notification when there's a response.</p>
+      <button class="btn-primary" onclick="show('browse')">Browse more ideas</button>
+      <div style="margin-top:12px;">
+        <button class="btn-outline" onclick="show('home')">Back to home</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- POST IDEA -->
+  <div class="screen" id="screen-post">
+    <button class="back-btn" onclick="show('home')">← Back</button>
+    <div class="post-wrap">
+      <h2>Post your startup idea</h2>
+      <p class="sub">Share your vision and find the right people to build with.</p>
+
+      <div class="steps-indicator">
+        <div class="step-ind done"></div>
+        <div class="step-ind done"></div>
+        <div class="step-ind"></div>
+        <div class="step-ind"></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Startup name</label>
+        <input class="form-input" type="text" placeholder="e.g. RideShare for Students" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">One-line description</label>
+        <input class="form-input" type="text" placeholder="What does it do in one sentence?" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">The problem you're solving</label>
+        <textarea class="form-textarea" placeholder="What pain point are you addressing and who has it?"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Your proposed solution</label>
+        <textarea class="form-textarea" placeholder="How does your idea solve this problem?"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Current stage</label>
+        <select class="form-select">
+          <option>Idea Stage</option>
+          <option>MVP Stage</option>
+          <option>Growth Stage</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select class="form-select">
+          <option>Tech / SaaS</option>
+          <option>E-commerce</option>
+          <option>Health</option>
+          <option>Education</option>
+          <option>Logistics</option>
+          <option>Fintech</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">City</label>
+        <select class="form-select">
+          <option>Karachi</option>
+          <option>Lahore</option>
+          <option>Islamabad</option>
+          <option>Faisalabad</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Who are you looking for?</label>
+        <div class="filters" style="margin-bottom:0;">
+          <button class="filter-btn active" onclick="toggleFilter(this)">Tech Co-founder</button>
+          <button class="filter-btn" onclick="toggleFilter(this)">Marketing</button>
+          <button class="filter-btn" onclick="toggleFilter(this)">Investor</button>
+          <button class="filter-btn" onclick="toggleFilter(this)">Sales</button>
+          <button class="filter-btn" onclick="toggleFilter(this)">Network / Advisor</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Equity range you're offering</label>
+        <input class="form-input" type="text" placeholder="e.g. 5–10%" />
+      </div>
+
+      <button class="btn-primary" style="width:100%;padding:14px;margin-top:10px;" onclick="show('home')">
+        Post Idea
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function show(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const el = document.getElementById('screen-' + id);
+    if (el) {
+      el.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  function setFilter(btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function toggleFilter(btn) {
+    btn.classList.toggle('active');
+  }
+
+  function toggleOffer(el) {
+    el.classList.toggle('selected');
+  }
+</script>
+</body>
+</html>
