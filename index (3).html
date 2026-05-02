@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>StartupPartner — Find Your Co-Founder</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#E94560;--dark:#0F1419;--text:#1A1A1A;--muted:#666;--light:#F5F7FA;
+  --border:#E5E7EB;--success:#10B981;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fff;color:var(--text);line-height:1.6;font-size:16px}
+.container{max-width:1200px;margin:0 auto;padding:0 20px}
+.screen{display:none}
+.screen.active{display:block}
+
+/* NAV */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;background:#fff}
+.nav-logo{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:700;color:var(--text);cursor:pointer;text-decoration:none}
+.logo-dot{width:8px;height:8px;border-radius:50%;background:var(--primary)}
+.nav-links{display:flex;gap:32px;align-items:center}
+.nav-link{font-size:14px;color:var(--muted);text-decoration:none;cursor:pointer;transition:.2s}
+.nav-link:hover{color:var(--text)}
+.nav-btn{font-size:14px;padding:8px 18px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--text);cursor:pointer;transition:.2s;font-family:'Inter',sans-serif}
+.nav-btn:hover{border-color:var(--text);background:var(--light)}
+.nav-btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.nav-btn.primary:hover{opacity:.9}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer}
+.hamburger span{width:24px;height:2px;background:var(--text);transition:.3s}
+@media(max-width:768px){
+  .nav-links{display:none}
+  .hamburger{display:flex}
+}
+
+/* HERO */
+.hero{padding:100px 20px;text-align:center;background:linear-gradient(135deg,#fff 0%,#f9fafb 100%)}
+.hero-tag{display:inline-block;font-size:12px;font-weight:600;color:var(--primary);border:1px solid rgba(233,69,96,.2);border-radius:20px;padding:6px 16px;margin-bottom:24px;text-transform:uppercase;letter-spacing:.5px}
+.hero h1{font-size:clamp(36px,8vw,60px);font-weight:700;line-height:1.2;margin-bottom:20px;color:var(--text)}
+.hero .highlight{color:var(--primary)}
+.hero p{font-size:18px;color:var(--muted);max-width:600px;margin:0 auto 40px;line-height:1.8}
+.hero-ctas{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.btn{padding:12px 32px;border-radius:6px;font-size:15px;font-weight:600;cursor:pointer;border:none;text-decoration:none;transition:.2s;font-family:'Inter',sans-serif;display:inline-block}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{opacity:.9;transform:translateY(-2px)}
+.btn-outline{border:1.5px solid var(--border);color:var(--text);background:transparent}
+.btn-outline:hover{border-color:var(--text);background:var(--light)}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:60px;padding:80px 20px;background:#fff}
+.stat{text-align:center}
+.stat-num{font-size:40px;font-weight:700;color:var(--primary);margin-bottom:12px}
+.stat-label{font-size:15px;color:var(--muted)}
+
+/* SECTION */
+.section{padding:80px 20px}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:48px}
+.section-title{font-size:32px;font-weight:700;color:var(--text)}
+.section-link{font-size:15px;color:var(--primary);text-decoration:none;cursor:pointer;font-weight:600;transition:.2s}
+.section-link:hover{opacity:.8}
+
+/* CARDS GRID */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;margin-top:40px}
+.card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px;cursor:pointer;transition:all .3s;overflow:hidden}
+.card:hover{border-color:var(--primary);box-shadow:0 12px 48px rgba(233,69,96,.12);transform:translateY(-4px)}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px}
+.card-icon{font-size:36px;width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:var(--light);border-radius:8px}
+.badge{font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;letter-spacing:.3px}
+.badge-idea{background:#E0F2FE;color:#0369A1}
+.badge-mvp{background:#DCFCE7;color:#166534}
+.badge-growth{background:#FEF3C7;color:#92400E}
+.card h3{font-size:17px;font-weight:600;margin-bottom:10px;color:var(--text)}
+.card p{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:16px}
+.card-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tag{font-size:12px;padding:4px 10px;background:var(--light);color:var(--muted);border-radius:20px;border:1px solid var(--border)}
+.card-meta{display:flex;gap:12px;font-size:13px;color:var(--muted)}
+
+/* TESTIMONIALS */
+.testimonials{background:#f9fafb;padding:80px 20px}
+.testi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-top:40px}
+.testi-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:28px}
+.testi-quote{font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:18px;font-style:italic}
+.testi-author{display:flex;align-items:center;gap:12px}
+.avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#fff}
+.testi-name{font-size:14px;font-weight:600;color:var(--text)}
+.testi-role{font-size:13px;color:var(--muted);margin-top:3px}
+
+/* SEARCH */
+.search-box{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:32px}
+.search-box input{border:none;background:transparent;font-size:14px;flex:1;outline:none;font-family:'Inter',sans-serif}
+
+/* FILTERS */
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:32px}
+.filter-btn{font-size:13px;padding:8px 16px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;transition:.2s;font-family:'Inter',sans-serif}
+.filter-btn.active{background:var(--dark);color:#fff;border-color:var(--dark)}
+.filter-btn:hover:not(.active){border-color:var(--text)}
+
+/* DETAIL */
+.detail-hero{padding:48px 20px;border-bottom:1px solid var(--border)}
+.detail-icon{font-size:48px;margin-bottom:20px}
+.detail-title{font-size:36px;font-weight:700;color:var(--text);margin-bottom:14px}
+.detail-sub{font-size:16px;color:var(--muted);margin-bottom:20px;line-height:1.6;max-width:600px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-size:13px;padding:6px 14px;border:1px solid var(--border);border-radius:20px;color:var(--muted)}
+
+.detail-body{padding:48px 20px;max-width:750px;margin:0 auto}
+.detail-section{margin-bottom:40px}
+.detail-section h4{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px}
+.detail-section p{font-size:15px;color:var(--muted);line-height:1.8}
+
+.role-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin:20px 0}
+.role-card{border:1px solid var(--border);border-radius:8px;padding:18px}
+.role-card h5{font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px}
+.role-card p{font-size:13px;color:var(--muted);line-height:1.5}
+.equity{font-size:14px;font-weight:600;color:var(--primary);margin-top:10px}
+
+.founder-row{display:flex;align-items:center;gap:16px;padding:18px;background:var(--light);border-radius:8px;cursor:pointer;transition:.2s;margin:20px 0}
+
+/* FORMS */
+.form-group{margin-bottom:24px}
+.form-label{font-size:13px;font-weight:600;color:var(--text);display:block;margin-bottom:8px}
+.form-input,.form-select,.form-textarea{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:.2s}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--primary)}
+.form-textarea{min-height:100px;resize:vertical}
+
+.offering-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+.offering-opt{border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center;cursor:pointer;transition:.2s;background:#fff}
+.offering-opt.selected{border-color:var(--primary);background:rgba(233,69,96,.05)}
+.offering-opt span{font-size:24px;display:block;margin-bottom:8px}
+.offering-opt p{font-size:12px;color:var(--muted);font-weight:500}
+
+/* BACK BUTTON */
+.back-btn{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);background:none;border:none;cursor:pointer;padding:16px 20px;font-family:'Inter',sans-serif;transition:.2s}
+.back-btn:hover{color:var(--text)}
+
+/* SUCCESS */
+.success-wrap{padding:80px 20px;text-align:center}
+.success-icon{width:64px;height:64px;border-radius:50%;background:#DCFCE7;color:var(--success);display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 24px;font-weight:600}
+.success-wrap h2{font-size:28px;font-weight:700;color:var(--text);margin-bottom:14px}
+.success-wrap p{font-size:15px;color:var(--muted);max-width:450px;margin:0 auto 32px;line-height:1.7}
+
+/* FOOTER */
+footer{padding:48px 20px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:14px;line-height:1.8}
+footer a{color:var(--muted);text-decoration:none;margin:0 12px;cursor:pointer;transition:.2s}
+footer a:hover{color:var(--text)}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .nav-links{gap:16px;font-size:13px}
+  .hero{padding:60px 20px}
+  .hero h1{font-size:32px}
+  .hero p{font-size:16px;margin-bottom:28px}
+  .hero-ctas{flex-direction:column;gap:12px}
+  .btn{width:100%;text-align:center;padding:12px 20px}
+  .section{padding:60px 20px}
+  .section-title{font-size:24px}
+  .cards{grid-template-columns:1fr;gap:18px}
+  .testi-grid{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr;gap:32px;padding:60px 20px}
+  .role-cards{grid-template-columns:1fr}
+  .detail-hero{padding:36px 20px}
+  .detail-title{font-size:28px}
+  .detail-body{padding:36px 20px}
+  .offering-grid{grid-template-columns:1fr}
+  footer{font-size:13px}
+  footer a{margin:0 8px}
+}
+
+@media(max-width:480px){
+  .nav-logo{font-size:17px}
+  .nav-btn{padding:6px 12px;font-size:13px}
+  .hero{padding:40px 16px}
+  .hero h1{font-size:26px}
+  .hero p{font-size:15px}
+  .hero-ctas{gap:8px}
+  .section{padding:40px 16px}
+  .section-header{flex-direction:column;align-items:flex-start;margin-bottom:32px}
+  .section-link{margin-top:12px}
+  .detail-body{padding:24px 16px}
+  .container{padding:0 16px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo" onclick="show('home')"><span class="logo-dot"></span>StartupPartner</div>
+  <div class="nav-links">
+    <a class="nav-link" onclick="show('about')">About</a>
+    <a class="nav-link" onclick="show('how')">How it works</a>
+    <a class="nav-link" onclick="show('browse')">Browse</a>
+    <button class="nav-btn" onclick="show('login')">Log in</button>
+    <button class="nav-btn primary" onclick="show('signup')">Sign up</button>
+  </div>
+  <div class="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div class="screen active" id="screen-home">
+  <div class="hero">
+    <div class="hero-tag">Pakistan's Startup Co-Founder Platform</div>
+    <h1>Find your <span class="highlight">co-founder</span></h1>
+    <p>Connect with startup ideas, talented people, and investors. Build your next big thing in Pakistan.</p>
+    <div class="hero-ctas">
+      <button class="btn btn-primary" onclick="show('browse')">Browse startups</button>
+      <button class="btn btn-outline" onclick="show('post')">Post your idea</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-num">142</div><div class="stat-label">Active startup ideas</div></div>
+    <div class="stat"><div class="stat-num">380+</div><div class="stat-label">Community members</div></div>
+    <div class="stat"><div class="stat-num">26</div><div class="stat-label">Partnerships formed</div></div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Featured ideas</h2>
+        <a class="section-link" onclick="show('browse')">View all →</a>
+      </div>
+      <div class="cards">
+        <div class="card" onclick="show('detail')">
+          <div class="card-top">
+            <div class="card-icon">🚗</div>
+            <span class="badge badge-mvp">MVP</span>
+          </div>
+          <h3>RideShare for Students</h3>
+          <p>University carpooling app connecting students commuting between campuses.</p>
+          <div class="card-tags"><span class="tag">Tech Partner</span><span class="tag">Marketing</span></div>
+          <div class="card-meta"><span>5–10% equity</span> · <span>Karachi</span></div>
+        </div>
+        <div class="card" onclick="show('detail2')">
+          <div class="card-top">
+            <div class="card-icon">📦</div>
+            <span class="badge badge-idea">Idea</span>
+          </div>
+          <h3>LocalMart Delivery</h3>
+          <p>Hyperlocal grocery delivery from neighbourhood kiryana stores.</p>
+          <div class="card-tags"><span class="tag">Developer</span><span class="tag">Investor</span></div>
+          <div class="card-meta"><span>8–15% equity</span> · <span>Lahore</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="testimonials">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Success stories</h2>
+      </div>
+      <div class="testi-grid">
+        <div class="testi-card">
+          <p class="testi-quote">"I posted my idea on a Friday. By Monday I had 6 proposals. Found my tech co-founder within a week."</p>
+          <div class="testi-author">
+            <div class="avatar" style="background:#E94560">AK</div>
+            <div><div class="testi-name">Ahmed Khan</div><div class="testi-role">Founder, RideShare</div></div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <p class="testi-quote">"As a developer I never knew how to find a startup to join. StartupPartner connected me with an idea I believed in."</p>
+          <div class="testi-author">
+            <div class="avatar" style="background:#10B981">ZA</div>
+            <div><div class="testi-name">Zara Ali</div><div class="testi-role">Co-founder, LocalMart</div></div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <p class="testi-quote">"The proposal system is brilliant. I could see exactly what each person offered before reaching out."</p>
+          <div class="testi-author">
+            <div class="avatar" style="background:#F59E0B">SR</div>
+            <div><div class="testi-name">Sara Raza</div><div class="testi-role">Founder, LocalMart</div></div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <p class="testi-quote">"I find early-stage deals here before anyone else. This is where the action is."</p>
+          <div class="testi-author">
+            <div class="avatar" style="background:#E94560">FM</div>
+            <div><div class="testi-name">Farrukh Mirza</div><div class="testi-role">Angel Investor</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    StartupPartner — Pakistan's startup co-founder platform · 2025<br>
+    <a onclick="show('about')">About</a>
+    <a onclick="show('how')">How it works</a>
+    <a onclick="show('browse')">Browse ideas</a>
+  </footer>
+</div>
+
+<!-- BROWSE -->
+<div class="screen" id="screen-browse">
+  <div class="container" style="padding-top:40px;padding-bottom:60px">
+    <h2 style="font-size:28px;font-weight:700;margin-bottom:10px">All startup ideas</h2>
+    <p style="font-size:15px;color:var(--muted);margin-bottom:32px">Browse 142 active ideas from founders across Pakistan</p>
+    
+    <div class="search-box">
+      <span>🔍</span>
+      <input type="text" placeholder="Search by name, role, or city..." oninput="filterCards(this.value)"/>
+    </div>
+
+    <div class="filters">
+      <button class="filter-btn active" onclick="setFilter(this,'all')">All</button>
+      <button class="filter-btn" onclick="setFilter(this,'tech')">Tech</button>
+      <button class="filter-btn" onclick="setFilter(this,'ecommerce')">E-commerce</button>
+      <button class="filter-btn" onclick="setFilter(this,'health')">Health</button>
+      <button class="filter-btn" onclick="setFilter(this,'education')">Education</button>
+    </div>
+
+    <div class="cards" id="browseCards">
+      <div class="card" data-cat="tech" onclick="show('detail')">
+        <div class="card-top"><div class="card-icon">🚗</div><span class="badge badge-mvp">MVP</span></div>
+        <h3>RideShare for Students</h3>
+        <p>University carpooling app for Karachi students.</p>
+        <div class="card-tags"><span class="tag">Tech</span><span class="tag">Mobility</span></div>
+        <div class="card-meta"><span>5–10% equity</span> · <span>Karachi</span></div>
+      </div>
+      <div class="card" data-cat="ecommerce" onclick="show('detail2')">
+        <div class="card-top"><div class="card-icon">📦</div><span class="badge badge-idea">Idea</span></div>
+        <h3>LocalMart Delivery</h3>
+        <p>Hyperlocal grocery delivery from kiryana stores.</p>
+        <div class="card-tags"><span class="tag">Logistics</span><span class="tag">E-commerce</span></div>
+        <div class="card-meta"><span>8–15% equity</span> · <span>Lahore</span></div>
+      </div>
+      <div class="card" data-cat="education" onclick="show('detail-tutorlink')">
+        <div class="card-top"><div class="card-icon">🎓</div><span class="badge badge-idea">Idea</span></div>
+        <h3>TutorLink Pakistan</h3>
+        <p>Verified tutor marketplace for school students.</p>
+        <div class="card-tags"><span class="tag">Education</span><span class="tag">Marketplace</span></div>
+        <div class="card-meta"><span>10–12% equity</span> · <span>Islamabad</span></div>
+      </div>
+      <div class="card" data-cat="health" onclick="show('detail-healthbridge')">
+        <div class="card-top"><div class="card-icon">🏥</div><span class="badge badge-growth">Growth</span></div>
+        <h3>HealthBridge</h3>
+        <p>Telemedicine for tier-2 cities with doctor shortages.</p>
+        <div class="card-tags"><span class="tag">Health</span><span class="tag">Telemedicine</span></div>
+        <div class="card-meta"><span>3–5% equity</span> · <span>Multan</span></div>
+      </div>
+      <div class="card" data-cat="ecommerce" onclick="show('detail-thriftpk')">
+        <div class="card-top"><div class="card-icon">🛍️</div><span class="badge badge-idea">Idea</span></div>
+        <h3>ThriftPK</h3>
+        <p>Second-hand fashion marketplace for Gen-Z.</p>
+        <div class="card-tags"><span class="tag">E-commerce</span><span class="tag">Fashion</span></div>
+        <div class="card-meta"><span>10–20% equity</span> · <span>Karachi</span></div>
+      </div>
+      <div class="card" data-cat="tech" onclick="show('detail-agriconnect')">
+        <div class="card-top"><div class="card-icon">🌾</div><span class="badge badge-mvp">MVP</span></div>
+        <h3>AgriConnect</h3>
+        <p>Direct farmer-to-buyer market without middlemen.</p>
+        <div class="card-tags"><span class="tag">AgriTech</span><span class="tag">B2B</span></div>
+        <div class="card-meta"><span>7–12% equity</span> · <span>Faisalabad</span></div>
+      </div>
+      <div class="card" data-cat="tech" onclick="show('detail-payease')">
+        <div class="card-top"><div class="card-icon">💳</div><span class="badge badge-idea">Idea</span></div>
+        <h3>PayEase</h3>
+        <p>Digital wallet for unbanked workers in Pakistan.</p>
+        <div class="card-tags"><span class="tag">Fintech</span><span class="tag">Inclusion</span></div>
+        <div class="card-meta"><span>8–14% equity</span> · <span>Karachi</span></div>
+      </div>
+      <div class="card" data-cat="health" onclick="show('detail-medstock')">
+        <div class="card-top"><div class="card-icon">💊</div><span class="badge badge-idea">Idea</span></div>
+        <h3>MedStock</h3>
+        <p>B2B pharmacy medicine procurement platform.</p>
+        <div class="card-tags"><span class="tag">Health</span><span class="tag">B2B</span></div>
+        <div class="card-meta"><span>6–10% equity</span> · <span>Karachi</span></div>
+      </div>
+      <div class="card" data-cat="education" onclick="show('detail-hirelocal')">
+        <div class="card-top"><div class="card-icon">💼</div><span class="badge badge-mvp">MVP</span></div>
+        <h3>HireLocal</h3>
+        <p>Verified job platform for blue-collar workers.</p>
+        <div class="card-tags"><span class="tag">Jobs</span><span class="tag">Verification</span></div>
+        <div class="card-meta"><span>5–8% equity</span> · <span>Karachi</span></div>
+      </div>
+      <div class="card" data-cat="ecommerce" onclick="show('detail-homebites')">
+        <div class="card-top"><div class="card-icon">🍱</div><span class="badge badge-idea">Idea</span></div>
+        <h3>HomeBites</h3>
+        <p>Home chef marketplace for authentic meals.</p>
+        <div class="card-tags"><span class="tag">Food</span><span class="tag">Marketplace</span></div>
+        <div class="card-meta"><span>10–15% equity</span> · <span>Lahore</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL PAGES: Rideshare -->
+<div class="screen" id="screen-detail">
+  <button class="back-btn" onclick="show('browse')">← Back to browse</button>
+  <div class="detail-hero">
+    <div class="detail-icon">🚗</div>
+    <span class="badge badge-mvp">MVP Stage</span>
+    <div class="detail-title">RideShare for Students</div>
+    <div class="detail-sub">University carpooling app connecting students commuting between campuses daily</div>
+    <div class="chips"><span class="chip">Tech</span><span class="chip">Mobility</span><span class="chip">Karachi</span></div>
+  </div>
+  <div class="detail-body">
+    <div class="detail-section">
+      <h4>The Problem</h4>
+      <p>Students in Karachi spend 2–3 hours daily commuting. Public transport is unreliable and ride-hailing is expensive. There's no affordable, safe option designed for students.</p>
+    </div>
+    <div class="detail-section">
+      <h4>The Solution</h4>
+      <p>A carpooling app exclusively for verified university students. Drivers and riders are both students, building trust through shared identity. Payments split automatically in-app.</p>
+    </div>
+    <div class="detail-section">
+      <h4>Looking for</h4>
+      <div class="role-cards">
+        <div class="role-card"><h5>Tech Co-founder</h5><p>Build and lead the mobile app (React Native or Flutter)</p><div class="equity">5–10% equity</div></div>
+        <div class="role-card"><h5>Marketing Partner</h5><p>Campus outreach, ambassador program</p><div class="equity">3–5% equity</div></div>
+      </div>
+    </div>
+    <div class="detail-section">
+      <h4>Founder</h4>
+      <div class="founder-row">
+        <div class="avatar" style="background:#E94560;color:#fff">AK</div>
+        <div><h5>Ahmed Khan</h5><p>Business student, IBA Karachi · 2nd-time founder</p></div>
+      </div>
+    </div>
+    <button class="btn btn-primary" style="width:100%;margin-top:24px" onclick="show('proposal')">Submit proposal</button>
+  </div>
+</div>
+
+<!-- LocalMart -->
+<div class="screen" id="screen-detail2">
+  <button class="back-btn" onclick="show('browse')">← Back to browse</button>
+  <div class="detail-hero">
+    <div class="detail-icon">📦</div>
+    <span class="badge badge-idea">Idea Stage</span>
+    <div class="detail-title">LocalMart Delivery</div>
+    <div class="detail-sub">Hyperlocal grocery delivery from neighbourhood kiryana stores to your doorstep</div>
+    <div class="chips"><span class="chip">E-commerce</span><span class="chip">Logistics</span><span class="chip">Lahore</span></div>
+  </div>
+  <div class="detail-body">
+    <div class="detail-section">
+      <h4>The Problem</h4>
+      <p>Small kiryana stores have loyal customers but no digital presence. People want quick delivery without premium prices. These two groups need a bridge.</p>
+    </div>
+    <div class="detail-section">
+      <h4>The Solution</h4>
+      <p>A lightweight app that digitises local kiryana stores and connects them to nearby residents for 30-minute delivery. Stores get more orders, customers get convenience.</p>
+    </div>
+    <div class="detail-section">
+      <h4>Looking for</h4>
+      <div class="role-cards">
+        <div class="role-card"><h5>Developer</h5><p>Full-stack web and mobile app development</p><div class="equity">8–12% equity</div></div>
+        <div class="role-card"><h5>Early Investor</h5><p>Seed capital to onboard 50 stores in Lahore</p><div class="equity">10–15% equity</div></div>
+      </div>
+    </div>
+    <div class="detail-section">
+      <h4>Founder</h4>
+      <div class="founder-row">
+        <div class="avatar" style="background:#10B981;color:#fff">SR</div>
+        <div><h5>Sara Raza</h5><p>CS student, LUMS Lahore · Former Bykea intern</p></div>
+      </div>
+    </div>
+    <button class="btn btn-primary" style="width:100%;margin-top:24px" onclick="show('proposal')">Submit proposal</button>
+  </div>
+</div>
+
+<!-- TutorLink -->
+<div class="screen" id="screen-detail-tutorlink">
+  <button class="back-btn" onclick="show('browse')">← Back</button>
+  <div class="detail-hero">
+    <div class="detail-icon">🎓</div>
+    <span class="badge badge-idea">Idea Stage</span>
+    <div class="detail-title">TutorLink Pakistan</div>
+    <div class="detail-sub">Verified tutor marketplace for school and university students</div>
+    <div class="chips"><span class="chip">Education</span><span class="chip">Marketplace</span><span class="chip">Islamabad</span></div>
+  </div>
+  <div class="detail-body">
+    <div class="detail-section"><h4>The Problem</h4><p>Parents struggle to find reliable tutors. Good tutors have no way to reach students beyond word of mouth.</p></div>
+    <div class="detail-section"><h4>The Solution</h4><p>A verified tutor marketplace where parents browse by subject, city, price, and ratings. Tutors get profile pages, student reviews, and booking system.</p></div>
+    <div class="detail-section"><h4>Looking for</h4><div class="role-cards"><div class="role-card"><h5>Sales & Partnerships</h5><p>Onboard tutors in Islamabad</p><div class="equity">8–10% equity</div></div><div class="role-card"><h5>Growth</h5><p>Parent community outreach</p><div class="equity">5–8% equity</div></div></div></div>
+    <button class="btn btn-primary" style="width:100%;margin-top:24px" onclick="show('proposal')">Submit proposal</button>
+  </div>
+</div>
+
+<!-- HealthBridge -->
+<div class="screen" id="screen-detail-healthbridge">
+  <button class="back-btn" onclick="show('browse')">← Back</button>
+  <div class="detail-hero">
+    <div class="detail-icon">🏥</div>
+    <span class="badge badge-growth">Growth Stage</span>
+    <div class="detail-title">HealthBridge</div>
+    <div class="detail-sub">Telemedicine platform for tier-2 Pakistani cities with doctor shortages</div>
+    <div class="chips"><span class="chip">Health</span><span class="chip">Telemedicine</span><span class="chip">Multan</span></div>
+  </div>
+  <div class="detail-body">
+    <div class="detail-section"><h4>The Problem</h4><p>Cities like Multan have 1 doctor per 3,000 residents. Specialists are non-existent. Patients travel hours for consultations.</p></div>
+    <div class="detail-section"><h4>The Solution</h4><p>HealthBridge connects patients to verified doctors via video. Already onboarded 40 doctors and completed 300+ consultations in Multan.</p></div>
+    <div class="detail-section"><h4>Looking for</h4><div class="role-cards"><div class="role-card"><h5>Series-A Investor</h5><p>PKR 50L–1Cr to expand to 5 new cities</p><div class="equity">3–5% equity</div></div><div class="role-card"><h5>Operations</h5><p>Doctor onboarding, city expansion</p><div class="equity">4–6% equity</div></div></div></div>
+    <button class="btn btn-primary" style="width:100%;margin-top:24px" onclick="show('proposal')">Submit proposal</button>
+  </div>
+</div>
+
+<!-- ThriftPK -->
+<div class="screen" id="screen-detail-thriftpk">
+  <button class="back-btn" onclick="show('browse')">← Back</button>
+  <div class="detail-hero">
+    <div class="detail-icon">🛍️</div>
+    <span class="badge badge-idea">Idea Stage</span>
+    <div class="detail-title">ThriftPK</div>
+    <div class="detail-sub">Pakistan's peer-to-peer second-hand fashion marketplace</div>
+    <div class="chips"><span class="chip">E-commerce</span><span class="chip">Fashion</span><span class="chip">Karachi</span></div>
+  </div>
+  <div class="detail-body">
+    <div class="detail-section"><h4>The Problem</h4><p>Gen-Z wants affordable, unique fashion but no trusted second-hand platform exists.</p></div>
+    <div class="detail-section"><h4>The Solution</h4><p>Mobile-first marketplace where users list pre-loved clothes. Payments held in escrow. Both buyer and seller rated.</p></div>
+    <div class="detail-section"><h4>Looking for</h4><div class="role-cards"><div class="role-card"><h5>Marketing Co-founder</h5><p>Instagram-native growth, influencer partnerships</p><div class="equity">12–18% equity</div></div><div class="role-card"><h5>Tech Co-founder</h5><p>Build iOS/Android app with payments</p><div class="equity">10–15% equity</div></div></div></div>
+    <button class="btn btn-primary" style="width:100%;margin-top:24px" onclick="show('proposal')">Submit proposal</button>
+  </div>
+</div>
+
+<!-- AgriConnect -->
+<div class="screen" id="screen-detail-agriconnect">
+  <button class="back-btn" onclick="show('browse')">← Back</button>
+  <div class="detail-hero">
+    <div class="detail-icon">🌾</div>
+    <span class="badge badge-mvp">MVP Stage</span>
+    <div class="detail-title">AgriConnect</div>
+    <div class="detail-sub">Direct farmer-to-buyer market cutting out middlemen</div>
+    <div class="chips"><span class="chip">AgriTech</span><span class="chip">B2B</span><span class="chip">Faisalabad</span></div>
+  </div>
+  <div class="detail-body">
+    <div class="detail-section"><h4>The Problem</h4><p>Farmers earn only 30–40% because of middlemen. No price transparency, no direct buyer access.</p></div>
+    <div class="detail-section"><h4>The Solution</h4><p>WhatsApp-integrated platform where farmers list harvest and buyers bid directly. Piloted with 12 wheat farmers — 28% better prices.</p></div>
+    <div class="detail-section"><h4>Looking for</h4><div class="role-cards"><div class="role-card"><h5>Developer</h5><p>Improve WhatsApp bot, web dashboard</p><div class="equity">7–10% equity</div></div><div class="role-card"><h5>Network / BD</h5><p>Onboard restaurants, mills, exporters</p><div class="equity">7–12% equity</div></div></div></div>
+    <button class="btn btn-primary" style="width:100%;margin-top:24px" onclick="show('proposal')">Submit proposal</button>
+  </div>
+</div>
+
+<!-- PayEase -->
+<div class="screen" id="screen-detail-payease">
+  <button class="back-btn" onclick="show('browse')">← Back</button>
+  <div class="detail-hero">
+    <div class="detail-icon">💳</div>
+    <span class="badge badge-idea">Idea Stage</span>
+    <div class="detail-title">PayEase</div>
+    <div class="detail-sub">Digital wallet for unbanked workers in Pakistan</div>
+    <div class="chips"><span class="chip">Fintech</span><span class="chip">Inclusion</span><span class="chip">Karachi</span></div>
+  </div>
+  <div class="detail-body">
+    <div class="detail-section"><h4>The Problem</h4><p>100M Pakistanis have no bank account. Workers receive unsafe cash salaries with no record.</p></div>
+    <div class="detail-section"><h4>The Solution</h4><p>PayEase gives every worker a mobile wallet using CNIC and phone only. Build transaction history for future loans.</p></div>
+    <div class="detail-section"><h4>Looking for</h4><div class="role-cards"><div class="role-card"><h5>Tech Co-founder</h5><p>Build wallet app, SBP integration</p><div class="equity">10–14% equity</div></div><div class="role-card"><h5>Investor</h5><p>Pre-seed capital for licensing</p><div class="equity">8–12% equity</div></div></div></div>
+    <button class="btn btn-primary" style="width:100%;margin-top:24px" onclick="show('proposal')">Submit proposal</button>
+  </div>
+</div>
+
+<!-- MedStock -->
+<div class="screen" id="screen-detail-medstock">
+  <button class="back-btn" onclick="show('browse')">← Back</button>
+  <div class="detail-hero">
+    <div class="detail-icon">💊</div>
+    <span class="badge badge-idea">Idea Stage</span>
+    <div class="detail-title">MedStock</div>
+    <div class="detail-sub">B2B platform for pharmacy medicine procurement</div>
+    <div class="chips"><span class="chip">Health</span><span class="chip">B2B</span><span class="chip">Karachi</span></div>
+  </div>
+  <div class="detail-body">
+    <div class="detail-section"><h4>The Problem</h4><p>Small pharmacies order from 5–10 sales reps by phone. No price comparison, no digital records.</p></div>
+    <div class="detail-section"><h4>The Solution</h4><p>B2B ordering platform where pharmacies browse and compare from multiple distributors. Orders fulfilled in 24 hours. Save 15–20%.</p></div>
+    <div class="detail-section"><h4>Looking for</h4><div class="role-cards"><div class="role-card"><h5>Developer</h5><p>Build ordering platform and dashboard</p><div class="equity">8–10% equity</div></div><div class="role-card"><h5>Sales</h5><p>Onboard pharmacies and distributors</p><div class="equity">6–8% equity</div></div></div></div>
+    <button class="btn btn-primary" style="width:100%;margin-top:24px" onclick="show('proposal')">Submit proposal</button>
+  </div>
+</div>
+
+<!-- HireLocal -->
+<div class="screen" id="screen-detail-hirelocal">
+  <button class="back-btn" onclick="show('browse')">← Back</button>
+  <div class="detail-hero">
+    <div class="detail-icon">💼</div>
+    <span class="badge badge-mvp">MVP Stage</span>
+    <div class="detail-title">HireLocal</div>
+    <div class="detail-sub">Verified job platform for blue-collar workers in Karachi</div>
+    <div class="chips"><span class="chip">Jobs</span><span class="chip">Verification</span><span class="chip">Karachi</span></div>
+  </div>
+  <div class="detail-body">
+    <div class="detail-section"><h4>The Problem</h4><p>Finding a reliable plumber, electrician, or worker is a nightmare. No way to verify skills.</p></div>
+    <div class="detail-section"><h4>The Solution</h4><p>Creates verified digital profiles for blue-collar workers. CNIC-verified, skill-tested, rated by employers. Portable reputation.</p></div>
+    <div class="detail-section"><h4>Looking for</h4><div class="role-cards"><div class="role-card"><h5>Marketing Partner</h5><p>Employer-side acquisition</p><div class="equity">5–7% equity</div></div><div class="role-card"><h5>Operations</h5><p>Worker onboarding, verification</p><div class="equity">5–8% equity</div></div></div></div>
+    <button class="btn btn-primary" style="width:100%;margin-top:24px" onclick="show('proposal')">Submit proposal</button>
+  </div>
+</div>
+
+<!-- HomeBites -->
+<div class="screen" id="screen-detail-homebites">
+  <button class="back-btn" onclick="show('browse')">← Back</button>
+  <div class="detail-hero">
+    <div class="detail-icon">🍱</div>
+    <span class="badge badge-idea">Idea Stage</span>
+    <div class="detail-title">HomeBites</div>
+    <div class="detail-sub">Neighbourhood platform for home chefs to sell meals</div>
+    <div class="chips"><span class="chip">Food</span><span class="chip">Marketplace</span><span class="chip">Lahore</span></div>
+  </div>
+  <div class="detail-body">
+    <div class="detail-section"><h4>The Problem</h4><p>Home cooks run informal food businesses on WhatsApp with no payment system or visibility.</p></div>
+    <div class="detail-section"><h4>The Solution</h4><p>Neighbourhood food marketplace where verified home chefs list daily menus. Customers order within 5km radius for pickup/delivery.</p></div>
+    <div class="detail-section"><h4>Looking for</h4><div class="role-cards"><div class="role-card"><h5>Tech Co-founder</h5><p>Build marketplace app with payments</p><div class="equity">12–15% equity</div></div><div class="role-card"><h5>Marketing</h5><p>Chef onboarding, social media</p><div class="equity">8–10% equity</div></div></div></div>
+    <button class="btn btn-primary" style="width:100%;margin-top:24px" onclick="show('proposal')">Submit proposal</button>
+  </div>
+</div>
+
+<!-- PARTNER DASHBOARD -->
+<div class="screen" id="screen-partner-dashboard">
+  <div class="container" style="padding:40px 20px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:40px">
+      <div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:4px">Logged in as partner</p>
+        <h2 style="font-size:24px;font-weight:700;color:var(--text)">Zara Ali</h2>
+      </div>
+      <button class="btn btn-outline" style="font-size:13px;padding:8px 16px" onclick="show('home')">Log out</button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:40px">
+      <div style="background:var(--light);border:1px solid var(--border);border-radius:8px;padding:18px;text-align:center">
+        <div style="font-size:28px;font-weight:700;color:var(--primary);margin-bottom:4px">2</div>
+        <div style="font-size:13px;color:var(--muted)">Applied to</div>
+      </div>
+      <div style="background:var(--light);border:1px solid var(--border);border-radius:8px;padding:18px;text-align:center">
+        <div style="font-size:28px;font-weight:700;color:var(--primary);margin-bottom:4px">1</div>
+        <div style="font-size:13px;color:var(--muted)">Viewed</div>
+      </div>
+      <div style="background:var(--light);border:1px solid var(--border);border-radius:8px;padding:18px;text-align:center">
+        <div style="font-size:28px;font-weight:700;color:var(--success);margin-bottom:4px">1</div>
+        <div style="font-size:13px;color:var(--muted)">Accepted</div>
+      </div>
+    </div>
+
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:16px">My proposals</h3>
+    <div style="margin-bottom:24px">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:18px;background:#fff;border:1px solid var(--border);border-radius:8px;margin-bottom:10px">
+        <div>
+          <h5 style="font-size:15px;font-weight:600;color:var(--text)">RideShare for Students</h5>
+          <p style="font-size:13px;color:var(--muted);margin-top:3px">Applied as Tech Co-founder · 2 days ago</p>
+        </div>
+        <span style="font-size:11px;font-weight:600;padding:6px 12px;border-radius:20px;background:#DBEAFE;color:#0369A1">Viewed</span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:18px;background:#fff;border:1px solid var(--border);border-radius:8px;margin-bottom:10px">
+        <div>
+          <h5 style="font-size:15px;font-weight:600;color:var(--text)">LocalMart Delivery</h5>
+          <p style="font-size:13px;color:var(--muted);margin-top:3px">Applied as Developer · 5 days ago</p>
+        </div>
+        <span style="font-size:11px;font-weight:600;padding:6px 12px;border-radius:20px;background:#FEF3C7;color:#92400E">Pending</span>
+      </div>
+    </div>
+
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:16px">Recommended for you</h3>
+    <div class="cards">
+      <div class="card" onclick="show('detail-agriconnect')">
+        <div class="card-top"><div class="card-icon">🌾</div><span class="badge badge-mvp">MVP</span></div>
+        <h3>AgriConnect</h3>
+        <p>Direct farmer-to-buyer market without middlemen.</p>
+        <div class="card-meta"><span>7–12% equity</span> · <span>Faisalabad</span></div>
+      </div>
+      <div class="card" onclick="show('detail-payease')">
+        <div class="card-top"><div class="card-icon">💳</div><span class="badge badge-idea">Idea</span></div>
+        <h3>PayEase</h3>
+        <p>Digital wallet for unbanked workers in Pakistan.</p>
+        <div class="card-meta"><span>8–14% equity</span> · <span>Karachi</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOUNDER DASHBOARD -->
+<div class="screen" id="screen-founder-dashboard">
+  <div class="container" style="padding:40px 20px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:40px">
+      <div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:4px">Logged in as founder</p>
+        <h2 style="font-size:24px;font-weight:700;color:var(--text)">Ahmed Khan</h2>
+      </div>
+      <button class="btn btn-outline" style="font-size:13px;padding:8px 16px" onclick="show('home')">Log out</button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:40px">
+      <div style="background:var(--light);border:1px solid var(--border);border-radius:8px;padding:18px;text-align:center">
+        <div style="font-size:28px;font-weight:700;color:var(--primary);margin-bottom:4px">1</div>
+        <div style="font-size:13px;color:var(--muted)">Active idea</div>
+      </div>
+      <div style="background:var(--light);border:1px solid var(--border);border-radius:8px;padding:18px;text-align:center">
+        <div style="font-size:28px;font-weight:700;color:var(--primary);margin-bottom:4px">6</div>
+        <div style="font-size:13px;color:var(--muted)">Proposals in</div>
+      </div>
+      <div style="background:var(--light);border:1px solid var(--border);border-radius:8px;padding:18px;text-align:center">
+        <div style="font-size:28px;font-weight:700;color:var(--success);margin-bottom:4px">1</div>
+        <div style="font-size:13px;color:var(--muted)">Accepted</div>
+      </div>
+    </div>
+
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:14px">My posted idea</h3>
+    <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:18px;margin-bottom:32px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="font-size:32px;width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:var(--light);border-radius:8px">🚗</div>
+          <div>
+            <div style="font-size:15px;font-weight:600;color:var(--text)">RideShare for Students</div>
+            <div style="font-size:13px;color:var(--muted);margin-top:2px">Posted 3 days ago · Karachi</div>
+          </div>
+        </div>
+        <span class="badge badge-mvp">MVP Stage</span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+        <button class="btn btn-outline" style="font-size:12px;padding:6px 12px" onclick="show('founder-proposals')">View 6 proposals</button>
+        <button class="btn btn-outline" style="font-size:12px;padding:6px 12px" onclick="show('detail')">View listing</button>
+        <button class="btn btn-outline" style="font-size:12px;padding:6px 12px;color:var(--primary);border-color:rgba(233,69,96,.3)">Edit idea</button>
+      </div>
+    </div>
+
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:14px">Quick actions</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:32px">
+      <div onclick="show('founder-proposals')" style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:18px;cursor:pointer;transition:.2s" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="font-size:24px;margin-bottom:10px">📬</div>
+        <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">Review proposals</div>
+        <div style="font-size:12px;color:var(--muted)">3 new since yesterday</div>
+      </div>
+      <div onclick="show('post')" style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:18px;cursor:pointer;transition:.2s" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="font-size:24px;margin-bottom:10px">➕</div>
+        <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">Post another idea</div>
+        <div style="font-size:12px;color:var(--muted)">List a new startup idea</div>
+      </div>
+      <div onclick="show('browse')" style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:18px;cursor:pointer;transition:.2s" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="font-size:24px;margin-bottom:10px">🔍</div>
+        <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">Browse community</div>
+        <div style="font-size:12px;color:var(--muted)">See other startup ideas</div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:18px;cursor:pointer;transition:.2s" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="font-size:24px;margin-bottom:10px">📄</div>
+        <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">Legal documents</div>
+        <div style="font-size:12px;color:var(--muted)">NDA & partnership templates</div>
+      </div>
+    </div>
+
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:14px">Accepted partner</h3>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:18px;background:#fff;border:1px solid rgba(16,185,129,.15);border-radius:8px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--success);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600">ZA</div>
+        <div>
+          <div style="font-size:14px;font-weight:600;color:var(--text)">Zara Ali</div>
+          <div style="font-size:13px;color:var(--muted)">Tech Co-founder · Accepted 2 days ago</div>
+        </div>
+      </div>
+      <span style="font-size:11px;font-weight:600;padding:6px 12px;border-radius:20px;background:#DCFCE7;color:var(--success)">Accepted</span>
+    </div>
+  </div>
+</div>
+
+<!-- FOUNDER PROPOSALS LIST -->
+<div class="screen" id="screen-founder-proposals">
+  <button class="back-btn" onclick="show('founder-dashboard')">← Back to dashboard</button>
+  <div class="container" style="padding:40px 20px">
+    <h2 style="font-size:28px;font-weight:700;margin-bottom:10px">Proposals for RideShare</h2>
+    <p style="font-size:15px;color:var(--muted);margin-bottom:32px">6 people have applied to be part of your team</p>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:32px">
+      <button class="filter-btn active" onclick="setProposalFilter(this,'all')">All (6)</button>
+      <button class="filter-btn" onclick="setProposalFilter(this,'new')">New (3)</button>
+      <button class="filter-btn" onclick="setProposalFilter(this,'viewed')">Viewed (2)</button>
+      <button class="filter-btn" onclick="setProposalFilter(this,'accepted')">Accepted (1)</button>
+    </div>
+
+    <div id="proposalList">
+      <div class="proposal-card" data-status="accepted" style="display:flex;align-items:center;justify-content:space-between;padding:18px;background:#fff;border:1px solid rgba(16,185,129,.2);border-radius:8px;margin-bottom:12px;cursor:pointer" onclick="show('founder-proposal-detail')">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:40px;height:40px;border-radius:50%;background:var(--success);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0">ZA</div>
+          <div>
+            <h5 style="font-size:15px;font-weight:600;color:var(--text)">Zara Ali</h5>
+            <p style="font-size:13px;color:var(--muted);margin-top:2px">React Native dev · FAST Karachi · 2 days ago</p>
+          </div>
+        </div>
+        <span style="font-size:11px;font-weight:600;padding:6px 12px;border-radius:20px;background:#DCFCE7;color:var(--success);flex-shrink:0">Accepted</span>
+      </div>
+
+      <div class="proposal-card" data-status="viewed" style="display:flex;align-items:center;justify-content:space-between;padding:18px;background:#fff;border:1px solid var(--border);border-radius:8px;margin-bottom:12px;cursor:pointer" onclick="show('founder-proposal-detail')">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:40px;height:40px;border-radius:50%;background:#3B82F6;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0">OM</div>
+          <div>
+            <h5 style="font-size:15px;font-weight:600;color:var(--text)">Omar Malik</h5>
+            <p style="font-size:13px;color:var(--muted);margin-top:2px">Flutter dev · NED University · 4 days ago</p>
+          </div>
+        </div>
+        <span style="font-size:11px;font-weight:600;padding:6px 12px;border-radius:20px;background:#DBEAFE;color:#0369A1;flex-shrink:0">Viewed</span>
+      </div>
+
+      <div class="proposal-card" data-status="viewed" style="display:flex;align-items:center;justify-content:space-between;padding:18px;background:#fff;border:1px solid var(--border);border-radius:8px;margin-bottom:12px;cursor:pointer" onclick="show('founder-proposal-detail')">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:40px;height:40px;border-radius:50%;background:#F59E0B;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0">HB</div>
+          <div>
+            <h5 style="font-size:15px;font-weight:600;color:var(--text)">Hina Baig</h5>
+            <p style="font-size:13px;color:var(--muted);margin-top:2px">Marketing · IBA Karachi · 4 days ago</p>
+          </div>
+        </div>
+        <span style="font-size:11px;font-weight:600;padding:6px 12px;border-radius:20px;background:#DBEAFE;color:#0369A1;flex-shrink:0">Viewed</span>
+      </div>
+
+      <div class="proposal-card" data-status="new" style="display:flex;align-items:center;justify-content:space-between;padding:18px;background:#fff;border:1px solid var(--border);border-radius:8px;margin-bottom:12px;cursor:pointer" onclick="show('founder-proposal-detail')">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:40px;height:40px;border-radius:50%;background:#8B5CF6;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0">RK</div>
+          <div>
+            <h5 style="font-size:15px;font-weight:600;color:var(--text)">Raza Khan</h5>
+            <p style="font-size:13px;color:var(--muted);margin-top:2px">Full-stack dev · Remote · 1 day ago</p>
+          </div>
+        </div>
+        <span style="font-size:11px;font-weight:600;padding:6px 12px;border-radius:20px;background:#FEF3C7;color:#92400E;flex-shrink:0">New</span>
+      </div>
+
+      <div class="proposal-card" data-status="new" style="display:flex;align-items:center;justify-content:space-between;padding:18px;background:#fff;border:1px solid var(--border);border-radius:8px;margin-bottom:12px;cursor:pointer" onclick="show('founder-proposal-detail')">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:40px;height:40px;border-radius:50%;background:#10B981;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0">SA</div>
+          <div>
+            <h5 style="font-size:15px;font-weight:600;color:var(--text)">Sana Akhtar</h5>
+            <p style="font-size:13px;color:var(--muted);margin-top:2px">Investor · DHA Karachi · 1 day ago</p>
+          </div>
+        </div>
+        <span style="font-size:11px;font-weight:600;padding:6px 12px;border-radius:20px;background:#FEF3C7;color:#92400E;flex-shrink:0">New</span>
+      </div>
+
+      <div class="proposal-card" data-status="new" style="display:flex;align-items:center;justify-content:space-between;padding:18px;background:#fff;border:1px solid var(--border);border-radius:8px;margin-bottom:12px;cursor:pointer" onclick="show('founder-proposal-detail')">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:40px;height:40px;border-radius:50%;background:#E94560;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0">FH</div>
+          <div>
+            <h5 style="font-size:15px;font-weight:600;color:var(--text)">Fatima Hassan</h5>
+            <p style="font-size:13px;color:var(--muted);margin-top:2px">Marketing · Szabist Karachi · Today</p>
+          </div>
+        </div>
+        <span style="font-size:11px;font-weight:600;padding:6px 12px;border-radius:20px;background:#FEF3C7;color:#92400E;flex-shrink:0">New</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOUNDER SINGLE PROPOSAL DETAIL -->
+<div class="screen" id="screen-founder-proposal-detail">
+  <button class="back-btn" onclick="show('founder-proposals')">← Back to proposals</button>
+  <div class="container" style="max-width:700px;padding:40px 20px">
+
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:32px;padding:20px;background:var(--light);border-radius:8px">
+      <div style="width:56px;height:56px;border-radius:50%;background:var(--success);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600;flex-shrink:0">ZA</div>
+      <div>
+        <div style="font-size:20px;font-weight:700;color:var(--text)">Zara Ali</div>
+        <div style="font-size:14px;color:var(--muted);margin-top:3px">React Native developer · FAST Karachi</div>
+      </div>
+      <span style="font-size:11px;font-weight:600;padding:6px 12px;border-radius:20px;background:#DCFCE7;color:var(--success);margin-left:auto;flex-shrink:0">Accepted</span>
+    </div>
+
+    <div style="margin-bottom:28px">
+      <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Applying for</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <span style="font-size:13px;padding:6px 14px;background:var(--light);border:1px solid var(--border);border-radius:20px;color:var(--text)">💻 Tech Co-founder</span>
+        <span style="font-size:13px;padding:6px 14px;background:var(--light);border:1px solid var(--border);border-radius:20px;color:var(--text)">Skills</span>
+      </div>
+    </div>
+
+    <div style="margin-bottom:28px">
+      <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Their pitch</div>
+      <p style="font-size:15px;color:var(--muted);line-height:1.8;background:var(--light);padding:16px;border-radius:8px;font-style:italic">"I'm a final year CS student with 2 internships in mobile development. I've built 3 apps independently, one of which got 400 downloads with zero marketing. I use public transport daily and this problem genuinely affects my life. I'm not just a developer — I'm your target user."</p>
+    </div>
+
+    <div style="margin-bottom:28px">
+      <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Why this startup?</div>
+      <p style="font-size:15px;color:var(--muted);line-height:1.8">"Carpooling works in every other country but nobody has cracked it for students in Pakistan. The trust problem is real — but verifying through university email solves it. I've thought about this exact idea myself."</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px">
+      <div style="border:1px solid var(--border);border-radius:8px;padding:14px">
+        <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px">Skills</div>
+        <div style="font-size:14px;color:var(--text)">React Native, Node.js, Firebase, UI design</div>
+      </div>
+      <div style="border:1px solid var(--border);border-radius:8px;padding:14px">
+        <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px">Availability</div>
+        <div style="font-size:14px;color:var(--text)">Part-time now, full-time from July</div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:32px">
+      <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">LinkedIn</div>
+      <a style="font-size:14px;color:var(--primary);text-decoration:none">linkedin.com/in/zaraali-dev</a>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+      <button class="btn btn-primary" onclick="show('founder-dashboard')">✓ Accept partner</button>
+      <button class="btn btn-outline" onclick="show('founder-proposals')" style="color:#E94560;border-color:rgba(233,69,96,.3)">✕ Decline</button>
+    </div>
+    <button class="btn btn-outline" style="width:100%">💬 Send message</button>
+
+  </div>
+</div>
+
+<!-- PROPOSAL -->
+<div class="screen" id="screen-proposal">
+  <button class="back-btn" onclick="show('detail')">← Back</button>
+  <div class="container" style="max-width:550px;padding:48px 20px">
+    <h2 style="font-size:28px;font-weight:700;margin-bottom:10px">Submit your proposal</h2>
+    <p style="font-size:15px;color:var(--muted);margin-bottom:32px">Tell the founder what you bring to the table</p>
+
+    <div class="form-group">
+      <label class="form-label">What role are you applying for?</label>
+      <select class="form-select"><option>Tech Co-founder</option><option>Marketing Partner</option><option>Investor</option><option>Advisor</option></select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">What are you offering?</label>
+      <div class="offering-grid">
+        <div class="offering-opt selected" onclick="toggleOffer(this)"><span>💻</span><p>Skills</p></div>
+        <div class="offering-opt" onclick="toggleOffer(this)"><span>💰</span><p>Capital</p></div>
+        <div class="offering-opt" onclick="toggleOffer(this)"><span>🤝</span><p>Network</p></div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Tell us about yourself</label>
+      <textarea class="form-textarea" placeholder="Your experience and why you're interested..."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Your LinkedIn (optional)</label>
+      <input class="form-input" type="text" placeholder="https://linkedin.com/in/yourname"/>
+    </div>
+
+    <button class="btn btn-primary" style="width:100%" onclick="show('success')">Send proposal</button>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div class="screen" id="screen-success">
+  <div class="success-wrap">
+    <div class="success-icon">✓</div>
+    <h2>Proposal sent!</h2>
+    <p>The founder will review and reach out within 3–5 days. You'll get an email notification.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px">
+      <button class="btn btn-primary" onclick="show('browse')">Browse more ideas</button>
+      <button class="btn btn-outline" onclick="show('home')">Back to home</button>
+    </div>
+  </div>
+</div>
+
+<!-- POST -->
+<div class="screen" id="screen-post">
+  <button class="back-btn" onclick="show('home')">← Back</button>
+  <div class="container" style="max-width:550px;padding:48px 20px">
+    <h2 style="font-size:28px;font-weight:700;margin-bottom:10px">Post your startup idea</h2>
+    <p style="font-size:15px;color:var(--muted);margin-bottom:32px">Share your vision and find your team</p>
+
+    <div class="form-group"><label class="form-label">Startup name</label><input class="form-input" type="text" placeholder="e.g. RideShare for Students"/></div>
+    <div class="form-group"><label class="form-label">One-line description</label><input class="form-input" type="text" placeholder="What does it do?"/></div>
+    <div class="form-group"><label class="form-label">The problem you're solving</label><textarea class="form-textarea" placeholder="What pain point?"></textarea></div>
+    <div class="form-group"><label class="form-label">Your solution</label><textarea class="form-textarea" placeholder="How will you solve it?"></textarea></div>
+    <div class="form-group"><label class="form-label">Stage</label><select class="form-select"><option>Idea Stage</option><option>MVP Stage</option><option>Growth Stage</option></select></div>
+    <div class="form-group"><label class="form-label">City</label><select class="form-select"><option>Karachi</option><option>Lahore</option><option>Islamabad</option><option>Other</option></select></div>
+    <button class="btn btn-primary" style="width:100%" onclick="show('home')">Post your idea</button>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div class="screen" id="screen-login">
+  <button class="back-btn" onclick="show('home')">← Back</button>
+  <div class="container" style="max-width:450px;padding:48px 20px">
+    <h2 style="font-size:28px;font-weight:700;margin-bottom:10px">Welcome back</h2>
+    <p style="font-size:15px;color:var(--muted);margin-bottom:32px">Log in to your account</p>
+    <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="you@example.com"/></div>
+    <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" placeholder="••••••••"/></div>
+    <button class="btn btn-primary" style="width:100%;margin-bottom:12px" onclick="show('founder-dashboard')">Log in</button>
+    <button class="btn btn-outline" style="width:100%" onclick="show('signup')">Don't have an account? Sign up</button>
+  </div>
+</div>
+
+<!-- SIGNUP -->
+<div class="screen" id="screen-signup">
+  <button class="back-btn" onclick="show('home')">← Back</button>
+  <div class="container" style="max-width:450px;padding:48px 20px">
+    <h2 style="font-size:28px;font-weight:700;margin-bottom:10px">Create your account</h2>
+    <p style="font-size:15px;color:var(--muted);margin-bottom:32px">Join StartupPartner today</p>
+    <div class="form-group"><label class="form-label">Full name</label><input class="form-input" type="text" placeholder="Your name"/></div>
+    <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="you@example.com"/></div>
+    <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" placeholder="At least 8 characters"/></div>
+    <div class="form-group"><label class="form-label">I'm joining as a...</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div style="border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;cursor:pointer"><div style="font-size:20px;margin-bottom:6px">🚀</div><div style="font-size:13px;font-weight:600">Founder</div></div><div style="border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;cursor:pointer"><div style="font-size:20px;margin-bottom:6px">🛠️</div><div style="font-size:13px;font-weight:600">Partner</div></div></div></div>
+    <button class="btn btn-primary" style="width:100%;margin-bottom:12px" onclick="show('partner-dashboard')">Create account</button>
+    <button class="btn btn-outline" style="width:100%" onclick="show('login')">Already have an account? Log in</button>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div class="screen" id="screen-about">
+  <button class="back-btn" onclick="show('home')">← Back</button>
+  <div class="container" style="max-width:750px;padding:48px 20px">
+    <h2 style="font-size:36px;font-weight:700;margin-bottom:16px">About StartupPartner</h2>
+    <p style="font-size:16px;color:var(--muted);line-height:1.8;margin-bottom:36px">We believe the best startup ideas don't always come from well-connected people. StartupPartner democratises startup building by connecting founders, talented professionals, and investors across Pakistan.</p>
+    <h3 style="font-size:20px;font-weight:600;margin-bottom:14px">Why we started</h3>
+    <p style="font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:32px">Every week in Karachi, dozens of people pitch startup ideas. Most never build them — not because the ideas are bad, but because they can't find the right people to build with. We wanted to fix that.</p>
+    <h3 style="font-size:20px;font-weight:600;margin-bottom:14px">Our mission</h3>
+    <p style="font-size:15px;color:var(--muted);line-height:1.8">StartupPartner is the place where founders meet partners. Where developers find ideas that excite them. Where investors discover early-stage deals. Where anyone in Pakistan can build their next big thing.</p>
+  </div>
+</div>
+
+<!-- HOW -->
+<div class="screen" id="screen-how">
+  <button class="back-btn" onclick="show('home')">← Back</button>
+  <div class="container" style="max-width:750px;padding:48px 20px">
+    <h2 style="font-size:36px;font-weight:700;margin-bottom:36px">How it works</h2>
+    <div style="margin-bottom:36px">
+      <div style="display:flex;gap:20px;margin-bottom:16px"><div style="font-size:28px;font-weight:700;color:var(--primary);min-width:40px">1</div><div><h3 style="font-size:17px;font-weight:600;margin-bottom:8px">Founder posts an idea</h3><p style="font-size:15px;color:var(--muted)">Describe your problem, solution, stage, and what kind of partner you need.</p></div></div>
+    </div>
+    <div style="margin-bottom:36px">
+      <div style="display:flex;gap:20px;margin-bottom:16px"><div style="font-size:28px;font-weight:700;color:var(--primary);min-width:40px">2</div><div><h3 style="font-size:17px;font-weight:600;margin-bottom:8px">People browse ideas</h3><p style="font-size:15px;color:var(--muted)">Filter by category, city, role, or stage. Find an idea that excites you.</p></div></div>
+    </div>
+    <div style="margin-bottom:36px">
+      <div style="display:flex;gap:20px;margin-bottom:16px"><div style="font-size:28px;font-weight:700;color:var(--primary);min-width:40px">3</div><div><h3 style="font-size:17px;font-weight:600;margin-bottom:8px">Submit proposals</h3><p style="font-size:15px;color:var(--muted)">Tell the founder what you bring — skills, capital, or network.</p></div></div>
+    </div>
+    <div style="margin-bottom:36px">
+      <div style="display:flex;gap:20px;margin-bottom:16px"><div style="font-size:28px;font-weight:700;color:var(--primary);min-width:40px">4</div><div><h3 style="font-size:17px;font-weight:600;margin-bottom:8px">Founder reviews</h3><p style="font-size:15px;color:var(--muted)">Founder reviews proposals and reaches out to suitable candidates.</p></div></div>
+    </div>
+    <div style="margin-bottom:36px">
+      <div style="display:flex;gap:20px;margin-bottom:16px"><div style="font-size:28px;font-weight:700;color:var(--primary);min-width:40px">5</div><div><h3 style="font-size:17px;font-weight:600;margin-bottom:8px">Build together</h3><p style="font-size:15px;color:var(--muted)">Finalize equity, roles, and start building your startup.</p></div></div>
+    </div>
+    <div style="text-align:center;margin-top:40px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="show('browse')">Browse ideas</button>
+      <button class="btn btn-outline" onclick="show('post')">Post an idea</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function toggleMenu(){
+  const m=document.querySelector('.nav-links');
+  m.style.display=m.style.display==='flex'?'none':'flex';
+}
+function setFilter(btn,cat){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#browseCards .card').forEach(c=>{
+    c.style.display=(cat==='all'||c.dataset.cat.includes(cat))?'block':'none';
+  });
+}
+function filterCards(q){
+  const lq=q.toLowerCase();
+  document.querySelectorAll('#browseCards .card').forEach(c=>{
+    c.style.display=c.innerText.toLowerCase().includes(lq)?'block':'none';
+  });
+}
+function toggleOffer(el){
+  el.classList.toggle('selected');
+}
+function setProposalFilter(btn,status){
+  document.querySelectorAll('#screen-founder-proposals .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.proposal-card').forEach(c=>{
+    c.style.display=(status==='all'||c.dataset.status===status)?'flex':'none';
+  });
+}
+</script>
+</body>
+</html>
